@@ -9,24 +9,52 @@ const Student = () => {
         "Age": '',
         "Course": 'BCA'
     });
+    
+    var [image,setImage] = useState(null)
 
     const inputHandler = (event) => {
         const { name, value } = event.target
         setInputs((inputs) => ({ ...inputs, [name]: value }))
         console.log(inputs)
     }
-    const addHandler = () => {
-        console.log("Clicked")
-        console.log(inputs)
-        axios.post("http://localhost:3005/new", inputs)
-            .then((response)=> {
-    alert("record saved")
-})
-.catch(err=>console.log(err))
+    
+//     const addHandler = () => {
+//         console.log("Clicked")
+//         console.log(inputs)
+//         axios.post("http://localhost:3005/new", inputs)
+//             .then((response)=> {
+//     alert("record saved")
+// })
+// .catch(err=>console.log(err))
         
 
-        }
-    
+//         }
+const saveData=()=>{
+    const formdata=new FormData();
+    formdata.append('Admno',inputs.Admno);
+    formdata.append('Name',inputs.Name);
+    formdata.append('Age',inputs.Age);
+    formdata.append('Course',inputs.Course);
+    formdata.append('image',image);
+
+    fetch("http://localhost:3005/new",{
+        method:'post',
+        body:formdata,
+    })
+   .then((response)=>response.json())
+   .then((data)=>{
+
+    alert("record saved")
+   })
+   .catch((err)=>{
+    console.log("error")
+   })
+}
+    const handleimge=(event)=>{
+        const file=event.target.files[0];
+        setImage(file)
+        inputs.image1=file;
+    }
 
 return (
     <div>
@@ -41,7 +69,9 @@ return (
             <MenuItem value={"BCOM"}>BCOM</MenuItem>
             <MenuItem value={"BBA"}>BBA</MenuItem>
         </Select><br /><br />
-        <Button variant="contained"onClick={addHandler}>Submit</Button>
+        <label>choose file upload</label>
+        <input type="file"onChange={handleimge}></input><br></br><br></br>
+        <Button variant="contained"onClick={saveData}>Submit</Button>
     </div>
 )
 }
